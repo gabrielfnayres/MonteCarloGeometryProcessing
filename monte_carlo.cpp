@@ -13,6 +13,10 @@ double Geometry::length(const Vec2D& a){
     return sqrt(norm(a));
 }
 
+Geometry::Vec2D Geometry::rotate90(Vec2D a){
+    return Vec2D(-a.imag(), a.real());
+}
+
 Geometry::Vec2D Geometry::closestPoint(Vec2D x, Vec2D a, Vec2D b){ // atomic closest
     Vec2D u = b - a;
     double t = std::clamp( dot(x - a, u)/dot(u,u), 0.0, 1.0);
@@ -59,5 +63,28 @@ double Geometry::rayIntersection(Vec2D x, Vec2D v, Vec2D a, Vec2D b){
 
     if(t > 0. && 0. <= s && s <= 1.) return t;
     return INFINITY;
+}
+
+Geometry::Vec2D Geometry::intersectPolylines(Vec2D x, Vec2D v, double r, const std::vector<Polyline> &P, Vec2D& n, bool &onBoundary){
+
+
+    double tm = r;
+    n = Vec2D{0.0, 0.0};
+    onBoundary = false;
+    
+    for(int i = 0; i < P.size(); i++){
+        for(int j = 0; j < P[i].size() - 1; j++){
+            const double c = 1e-5;
+            double t = rayIntersection(x + c*v, v, P[i][j], P[i][j+1]);
+
+            if(t < tm){
+                tm = t;
+                n = rotate90(P[i][j+1] - P[i][j]);
+                n /= length(n);
+                onBoundary = true;
+            }
+        }
+    }
+    return x + tm*v;
 }
 

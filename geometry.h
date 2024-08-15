@@ -20,6 +20,7 @@ public:
     using Vec2D = std::complex<double>;
     using Polyline = std::vector<Vec2D>;
 
+    Vec2D rotate90(Vec2D a);
 
     double cross(const Vec2D &a, const Vec2D &b);
 
@@ -42,7 +43,7 @@ public:
     double WalkOnStars(Vec2D x0, std::vector<Polyline> boundaryDirichilet, std::vector<Polyline> boundaryNeumann, std::function<double(Vec2D)> g);
 
     double WalkOnSphere(Vec2D x0, std::vector<Polyline> boundaryDirichilet, std::function<double(Vec2D)> g);
-    
+
 };
 
 
