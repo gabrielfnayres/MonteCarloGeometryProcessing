@@ -13,6 +13,9 @@
 using Vec2D = std::complex<double>;
 using Polyline = std::vector<Vec2D>;
 
+double cross(const Vec2D &a, const Vec2D &b){
+    return ((a.real()*b.real()) - (a.imag()*b.imag()));
+}
 
 double dot(const Vec2D& a, const Vec2D& b){
     return ( a.real()*b.real() + a.imag()*b.imag());
@@ -35,6 +38,23 @@ double distancePolylines(Vec2D x, const std::vector<Polyline>& P){
         for(int j = 0; j < P[i].size(); j++){
             Vec2D y = closestPoint(x, P[i][j], P[i][j+1]);
             d = std::min(d, length(y));
+        }
+    }
+    return d;
+}
+
+bool isSilhouette(Vec2D x, Vec2D a, Vec2D b, Vec2D c){
+    return cross(b-a, x-a) * cross(c-b, x-b) < 0;
+}
+
+double silouetteDistancePolylines(Vec2D &x, const std::vector<Polyline>& P){
+    double d =  INFINITY;
+    for(int i = 0; i < P.size(); i++){
+        for(int j = 0; j < P[i].size(); j++){
+            if(isSilhouette(x, P[i][j - 1], P[i][j], P[i][j + 1])){
+                Vec2D t = x - P[i][j];
+                d = std::min(d, length(t));
+            }
         }
     }
     return d;
