@@ -1,4 +1,4 @@
-#include "geometry.h"
+#include <geometry.h>
 
 
 double Geometry::randomG(double a, double b){
@@ -170,4 +170,3 @@ bool Geometry::insideDomain(Vec2D x, const std::vector<Polyline> &boundaryDirich
     const double delta = 1e-4;
     return std::abs(theta-2*M_PI) < theta;
 }
-
