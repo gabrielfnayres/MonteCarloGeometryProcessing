@@ -9,6 +9,8 @@
 #include <functional>
 #include <fstream>
 #include <vector>
+#include <random>
+#include <cstdlib>
 #include <Eigen/Geometry>
 #include <numeric>
 
@@ -21,6 +23,10 @@ public:
     using Polyline = std::vector<Vec2D>;
 
     Vec2D rotate90(Vec2D a);
+
+    double angleOf(Vec2D a);
+
+    double randomG(double a, double b);
 
     double cross(const Vec2D &a, const Vec2D &b);
 

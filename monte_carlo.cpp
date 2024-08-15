@@ -1,6 +1,15 @@
 #include "geometry.h"
 
 
+double Geometry::randomG(double a, double b){
+    double n = ((double)rand() / (a - b + 1)) + b;
+    return n;
+}
+
+double Geometry::angleOf(Vec2D a){
+    return atan(a.imag()/a.real());
+}
+
 double Geometry::cross(const Vec2D &a, const Vec2D &b){
     return ((a.real()*b.real()) - (a.imag()*b.imag()));
 }
@@ -86,5 +95,53 @@ Geometry::Vec2D Geometry::intersectPolylines(Vec2D x, Vec2D v, double r, const s
         }
     }
     return x + tm*v;
+}
+
+double Geometry::WalkOnStars(Vec2D x0, std::vector<Polyline> boundaryDirichilet, std::vector<Polyline> boundaryNeumann, std::function<double(Vec2D)> g){
+
+    const double epsilon = 1e-4;
+    const double rmin = 1e-4; // limits how small the steps will shrink near the silhouette
+    const int nWalks = 65536;
+    const int maxSteps = 65536;
+
+    double sum = 0.0; // accumulate all values g we encounter at the boundary
+
+
+    for(int i = 0; i < nWalks; i++){
+        Vec2D x = x0;
+        Vec2D n{0.0, 0.0};
+
+        bool onBoundary = false;
+        double r;
+        double Dirichilet;
+        double Silhouette;
+        int steps = 0;
+
+        do{
+
+            Dirichilet = distancePolylines(x, boundaryDirichilet);
+            Silhouette = silhouetteDistancePolylines(x, boundaryNeumann);
+            r = std::max(rmin, std::min(Dirichilet, Silhouette));
+
+            double theta = randomG(-M_PI, M_PI);
+            
+            if(onBoundary){
+                theta = theta/2 + angleOf(n);
+            }
+
+            Vec2D v{cos(theta), sin(theta)};
+
+            x = intersectPolylines(x, v, r, boundaryNeumann, n, onBoundary);
+
+            steps++;
+        } while(Dirichilet > epsilon && steps < maxSteps);
+
+        if(steps >= maxSteps){
+            std::cerr << "MAX STEPS!!!!!!" << std::endl;
+        }
+
+        sum += g(x);
+    }
+    return sum/nWalks;
 }
 
