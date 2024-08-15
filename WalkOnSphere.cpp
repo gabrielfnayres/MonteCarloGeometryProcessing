@@ -1,0 +1,42 @@
+#include <algorithm>
+#include <iostream>
+#include <array>
+#include <complex>
+#include <random>
+#include <functional>
+#include <fstream>
+#include <vector>
+#include <Eigen/Geometry>
+#include <numeric>
+
+
+using Vec2D = std::complex<double>;
+using Polyline = std::vector<Vec2D>;
+
+
+double dot(const Vec2D& a, const Vec2D& b){
+    return ( a.real()*b.real() + a.imag()*b.imag());
+}
+
+double length(Vec2D& a){
+    return sqrt(norm(a));
+}
+
+Vec2D closestPoint(Vec2D x, Vec2D a, Vec2D b){ // atomic closest
+    Vec2D u = b - a;
+    double t = std::clamp( dot(x - a, u)/dot(u,u), 0.0, 1.0);
+    return(1.0 - t)*a.real() + t*b.real();
+}
+double distancePolylines(Vec2D x, const std::vector<Polyline>& P){
+
+    double d = INFINITY;
+
+    for(int i = 0; i < P.size(); i++){
+        for(int j = 0; j < P[i].size(); j++){
+            Vec2D y = closestPoint(x, P[i][j], P[i][j+1]);
+            d = std::min(d, length(y));
+        }
+    }
+    return d;
+}
+
