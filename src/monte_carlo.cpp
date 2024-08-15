@@ -1,4 +1,4 @@
-#include <geometry.h>
+#include "../includes/geometry.h"
 
 
 double Geometry::randomG(double a, double b){
@@ -97,11 +97,11 @@ Geometry::Vec2D Geometry::intersectPolylines(Vec2D x, Vec2D v, double r, const s
     return x + tm*v;
 }
 
-Geometry::Vec2D Geometry::intersectSpherical(Vec2D x, Vec2D v, double r, const std::vector<Polyline>& P, Vec2D &n, bool &onBoundary){
+/*Geometry::Vec2D Geometry::intersectSpherical(Vec2D x, Vec2D v, double r, const std::vector<Polyline>& P, Vec2D &n, bool &onBoundary){
 
     
 
-}
+}*/
 
 double Geometry::WalkOnStars(Vec2D x0, std::vector<Polyline> boundaryDirichilet, std::vector<Polyline> boundaryNeumann, std::function<double(Vec2D)> g){
 
@@ -168,5 +168,5 @@ bool Geometry::insideDomain(Vec2D x, const std::vector<Polyline> &boundaryDirich
     double theta = signedAngle(x, boundaryDirichilet) + signedAngle(x, boundaryNeumann);
 
     const double delta = 1e-4;
-    return std::abs(theta-2*M_PI) < theta;
+    return std::abs(theta-2*M_PI) < delta;
 }
