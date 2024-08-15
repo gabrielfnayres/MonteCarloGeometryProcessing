@@ -97,6 +97,12 @@ Geometry::Vec2D Geometry::intersectPolylines(Vec2D x, Vec2D v, double r, const s
     return x + tm*v;
 }
 
+Geometry::Vec2D Geometry::intersectSpherical(Vec2D x, Vec2D v, double r, const std::vector<Polyline>& P, Vec2D &n, bool &onBoundary){
+
+    
+
+}
+
 double Geometry::WalkOnStars(Vec2D x0, std::vector<Polyline> boundaryDirichilet, std::vector<Polyline> boundaryNeumann, std::function<double(Vec2D)> g){
 
     const double epsilon = 1e-4;
@@ -143,5 +149,25 @@ double Geometry::WalkOnStars(Vec2D x0, std::vector<Polyline> boundaryDirichilet,
         sum += g(x);
     }
     return sum/nWalks;
+}
+
+double Geometry::signedAngle(Vec2D x, const std::vector<Polyline> &P){
+    
+    double theta = 0;
+    for(int i = 0; i < P.size(); i++){
+        for(int j = 0; j < P[i].size(); j++){
+            theta += std::arg((P[i][j+1] - x)/(P[i][j] - x));
+        }
+    }
+
+    return theta;
+}
+
+bool Geometry::insideDomain(Vec2D x, const std::vector<Polyline> &boundaryDirichilet, const std::vector<Polyline>& boundaryNeumann){
+
+    double theta = signedAngle(x, boundaryDirichilet) + signedAngle(x, boundaryNeumann);
+
+    const double delta = 1e-4;
+    return std::abs(theta-2*M_PI) < theta;
 }
 

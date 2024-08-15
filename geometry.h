@@ -44,11 +44,18 @@ public:
 
     double rayIntersection(Vec2D x,Vec2D v,  Vec2D a,Vec2D b);
 
+    Vec2D intersectSpherical(Vec2D x, Vec2D v, double r, const std::vector<Polyline>& P, Vec2D& n, bool &onBoundary);
+
     Vec2D intersectPolylines(Vec2D x, Vec2D v, double r, const std::vector<Polyline> &P, Vec2D& n, bool &onBoundary);
 
     double WalkOnStars(Vec2D x0, std::vector<Polyline> boundaryDirichilet, std::vector<Polyline> boundaryNeumann, std::function<double(Vec2D)> g);
 
     double WalkOnSphere(Vec2D x0, std::vector<Polyline> boundaryDirichilet, std::function<double(Vec2D)> g);
+
+    double signedAngle(Vec2D x, const std::vector<Polyline>& P);
+
+    bool insideDomain(Vec2D x, const std::vector<Polyline> &boundaryDirichilet, const std::vector<Polyline>& boundaryNeumann);
+
 
 };
 
