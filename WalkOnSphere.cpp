@@ -47,7 +47,7 @@ bool isSilhouette(Vec2D x, Vec2D a, Vec2D b, Vec2D c){
     return cross(b-a, x-a) * cross(c-b, x-b) < 0;
 }
 
-double silouetteDistancePolylines(Vec2D &x, const std::vector<Polyline>& P){
+double silhouetteDistancePolylines(Vec2D &x, const std::vector<Polyline>& P){
     double d =  INFINITY;
     for(int i = 0; i < P.size(); i++){
         for(int j = 0; j < P[i].size(); j++){
@@ -58,5 +58,17 @@ double silouetteDistancePolylines(Vec2D &x, const std::vector<Polyline>& P){
         }
     }
     return d;
+}
+
+double rayIntersection(Vec2D x, Vec2D v, Vec2D a, Vec2D b){
+    Vec2D u = b - a;
+    Vec2D w = x - a;
+
+    double d = cross(v, u);
+    double s = cross(v, w) / d;
+    double t = cross(u, w) / d;
+
+    if(t > 0. && 0. <= s && s <= 1.) return t;
+    return INFINITY;
 }
 
