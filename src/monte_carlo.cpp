@@ -1,6 +1,8 @@
 #include "../includes/geometry.h"
 
+std::uniform_real_distribution<double> uniformDis(0.0, 1.0);
 
+std::mt19937 rnd;
 double Geometry::randomG(double a, double b){
     double n = ((double)rand() / (a - b + 1)) + b;
     return n;
@@ -30,6 +32,35 @@ Geometry::Vec2D Geometry::closestPoint(Vec2D x, Vec2D a, Vec2D b){ // atomic clo
     Vec2D u = b - a;
     double t = std::clamp( dot(x - a, u)/dot(u,u), 0.0, 1.0);
     return(1.0 - t)*a.real() + t*b.real();
+}
+
+
+double Geometry::calculateSphereArea( double r){
+    return  M_PI*(r*r);
+}
+
+Geometry::Vec2D Geometry::randPointOnSphere(Vec2D &x, double r){
+    double theta = uniformDis(rnd)*2*M_PI;
+    return Vec2D{x.real() + r*cos(theta), x.imag() + r*sin(theta)};
+}
+
+Geometry::Vec2D Geometry::randPointInSphere(Vec2D &x, double r){
+    double radious = r*sqrt(uniformDis(rnd));
+    double theta  = uniformDis(rnd)*2*M_PI;
+    
+    return Vec2D{x.real() + radious + cos(theta), x.imag() + radious + sin(theta)};
+}
+
+double Geometry::G(Vec2D &x, Vec2D &y, double sphereR){
+
+    double r = abs((y.real() - x.real()) + (y.imag() - x.imag()));
+    return ((1/2*(M_PI))*log(sphereR/r));
+}
+
+double Geometry::gradientG(Vec2D &x, Vec2D &y, double sphereR){
+    double r = abs((y.real() - x.real()) + (y.imag() - x.imag()));
+    double n = (y.real() - x.real()) + (y.real() - x.real());
+    return ((n/2*M_PI)*((1/(r*r)) - (1/(sphereR*sphereR))));
 }
 
 double Geometry::distancePolylines(Vec2D &x, const std::vector<Polyline>& P){
@@ -97,11 +128,6 @@ Geometry::Vec2D Geometry::intersectPolylines(Vec2D x, Vec2D v, double r, const s
     return x + tm*v;
 }
 
-/*Geometry::Vec2D Geometry::intersectSpherical(Vec2D x, Vec2D v, double r, const std::vector<Polyline>& P, Vec2D &n, bool &onBoundary){
-
-    
-
-}*/
 
 double Geometry::WalkOnStars(Vec2D x0, std::vector<Polyline> boundaryDirichilet, std::vector<Polyline> boundaryNeumann, std::function<double(Vec2D)> g){
 
@@ -146,6 +172,43 @@ double Geometry::WalkOnStars(Vec2D x0, std::vector<Polyline> boundaryDirichilet,
             std::cerr << "MAX STEPS!!!!!!" << std::endl;
         }
 
+        sum += g(x);
+    }
+    return sum/nWalks;
+}
+
+double Geometry::WalkOnSphere(Vec2D x0, std::vector<Polyline> boudaryDirichilet, std::function<double(Vec2D)> g){
+    
+    double epsilon = 1e-4;
+    int nWalks = 65523;
+    int maxSteps = 65523;
+    double rmin =  1e-4;
+
+    double sum = 0.0;
+
+    for(int i = 0; i < nWalks; i++){
+
+        Vec2D x = x0;
+        bool onBoundary = false;
+        double Dirichilet;
+        double Silhouette;
+        int steps = 0;
+
+        do{
+            Dirichilet = distancePolylines(x, boudaryDirichilet);    
+            
+
+            double r =  std::max(rmin, Dirichilet);
+            Silhouette = calculateSphereArea(r);
+            
+            Vec2D point = randPointOnSphere(x, r);
+
+            steps++;
+        }while(Dirichilet > epsilon && steps >= maxSteps);
+
+        if(steps >= maxSteps){
+            std::cerr << "MAX STEPS!!!!!!" << std::endl;
+        }
         sum += g(x);
     }
     return sum/nWalks;

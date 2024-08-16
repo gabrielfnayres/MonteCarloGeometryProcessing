@@ -5,6 +5,7 @@
 #include <iostream>
 #include <array>
 #include <complex>
+#include <cmath>
 #include <random>
 #include <functional>
 #include <fstream>
@@ -42,9 +43,17 @@ public:
 
     double silhouetteDistancePolylines(Vec2D x, const std::vector<Polyline>& P);
 
-    double rayIntersection(Vec2D x,Vec2D v,  Vec2D a,Vec2D b);
+    double calculateSphereArea(double r);
 
-    Vec2D intersectSpherical(Vec2D x, Vec2D v, double r, const std::vector<Polyline>& P, Vec2D& n, bool &onBoundary);
+    Vec2D randPointOnSphere(Vec2D &x, double r);
+
+    double G(Vec2D &x, Vec2D &y, double sphereR);
+
+    double gradientG(Vec2D &x, Vec2D &y, double sphereR);
+
+    Vec2D randPointInSphere(Vec2D &x, double r);
+
+    double rayIntersection(Vec2D x,Vec2D v,  Vec2D a,Vec2D b);
 
     Vec2D intersectPolylines(Vec2D x, Vec2D v, double r, const std::vector<Polyline> &P, Vec2D& n, bool &onBoundary);
 
