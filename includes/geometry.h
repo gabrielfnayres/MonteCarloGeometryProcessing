@@ -1,5 +1,3 @@
-#ifndef GEOMETRY_H
-#define GEOMETRY_H
 
 #include <algorithm>
 #include <iostream>
@@ -12,61 +10,55 @@
 #include <vector>
 #include <random>
 #include <cstdlib>
-#include <Eigen/Geometry>
 #include <numeric>
+#include <limits>
+
+using Vec2D = std::complex<double>;
+using Polyline = std::vector<Vec2D>;
+const double infinity = std::numeric_limits<double>::infinity();
+
+Vec2D rotate90(Vec2D a);
 
 
-class Geometry{
+double lines(Vec2D x);
 
-public:
+double angleOf(Vec2D a);
 
-    using Vec2D = std::complex<double>;
-    using Polyline = std::vector<Vec2D>;
+double randomG(double a, double b);
 
-    Vec2D rotate90(Vec2D a);
+double cross( Vec2D a, Vec2D b);
 
-    double angleOf(Vec2D a);
+double dot(Vec2D a, Vec2D b);
 
-    double randomG(double a, double b);
+double length(Vec2D a);
 
-    double cross(const Vec2D &a, const Vec2D &b);
+Vec2D closestPoint( Vec2D x, Vec2D a, Vec2D b);
 
-    double dot(const Vec2D& a, const Vec2D& b);
+double distancePolylines(Vec2D x, const std::vector<Polyline>& P);
 
-    double length(const Vec2D& a);
+bool isSilhouette(Vec2D x,  Vec2D a, Vec2D b, Vec2D c);
 
-    Vec2D closestPoint( Vec2D x, Vec2D a, Vec2D b);
+double silhouetteDistancePolylines(Vec2D x, const std::vector<Polyline>& P);
 
-    double distancePolylines(Vec2D& x, const std::vector<Polyline>& P);
+double calculateSphereArea(double r);
 
-    bool isSilhouette(Vec2D x,  Vec2D a, Vec2D b, Vec2D c);
+Vec2D randPointOnSphere(Vec2D &x, double r);
 
-    double silhouetteDistancePolylines(Vec2D x, const std::vector<Polyline>& P);
+double G(Vec2D &x, Vec2D &y, double sphereR);
 
-    double calculateSphereArea(double r);
+double gradientG(Vec2D &x, Vec2D &y, double sphereR);
 
-    Vec2D randPointOnSphere(Vec2D &x, double r);
+Vec2D randPointInSphere(Vec2D &x, double r);
 
-    double G(Vec2D &x, Vec2D &y, double sphereR);
+double rayIntersection(Vec2D x,Vec2D v,  Vec2D a,Vec2D b);
 
-    double gradientG(Vec2D &x, Vec2D &y, double sphereR);
+Vec2D intersectPolylines(Vec2D x, Vec2D v, double r, const std::vector<Polyline> &P, Vec2D& n, bool &onBoundary);
 
-    Vec2D randPointInSphere(Vec2D &x, double r);
+double WalkOnStars(Vec2D x0, std::vector<Polyline> boundaryDirichlet, std::vector<Polyline> boundaryNeumann, std::function<double(Vec2D)> g);
 
-    double rayIntersection(Vec2D x,Vec2D v,  Vec2D a,Vec2D b);
+double WalkOnSphere(Vec2D x0, std::vector<Polyline> boundaryDirichlet, std::function<double(Vec2D)> g);
 
-    Vec2D intersectPolylines(Vec2D x, Vec2D v, double r, const std::vector<Polyline> &P, Vec2D& n, bool &onBoundary);
+double signedAngle(Vec2D x, const std::vector<Polyline>& P);
 
-    double WalkOnStars(Vec2D x0, std::vector<Polyline> boundaryDirichilet, std::vector<Polyline> boundaryNeumann, std::function<double(Vec2D)> g);
+bool insideDomain(Vec2D x, const std::vector<Polyline> &boundaryDirichlet, const std::vector<Polyline>& boundaryNeumann);
 
-    double WalkOnSphere(Vec2D x0, std::vector<Polyline> boundaryDirichilet, std::function<double(Vec2D)> g);
-
-    double signedAngle(Vec2D x, const std::vector<Polyline>& P);
-
-    bool insideDomain(Vec2D x, const std::vector<Polyline> &boundaryDirichilet, const std::vector<Polyline>& boundaryNeumann);
-
-
-};
-
-
-#endif
