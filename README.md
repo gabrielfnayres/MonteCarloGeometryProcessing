@@ -11,3 +11,7 @@ Monte-Carlo methods are widely used for solving complex PDEs due to their probab
 - Demonstrate the capabilities of each Monte-Carlo geometry process.
 - Analyze their differences in terms of computational efficiency and results.
 - Provide visual examples of 2D and 3D images generated using each method.
+
+## Reference
+
+This Repository is based on https://www.cs.cmu.edu/~kmcrane/Projects/WalkOnStars/
